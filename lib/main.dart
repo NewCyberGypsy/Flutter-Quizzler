@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quizzler/quiz_brain.dart';
+
+QuizBrain quizBrain = QuizBrain();
 
 void main() {
   runApp(Quizzler());
@@ -27,6 +30,28 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   List<Icon> scoreKeeper = [];
+
+  void checkAnswer(bool userPickAnswer) {
+    bool correctAnswer = quizBrain.getCorrectAnswer();
+
+    setState(() {
+      if (userPickAnswer == correctAnswer) {
+        print('Right answer');
+        scoreKeeper.add(Icon(
+          Icons.check,
+          color: Colors.greenAccent,
+        ));
+      } else {
+        print('Wrong answer');
+        scoreKeeper.add(Icon(
+          Icons.close,
+          color: Colors.red,
+        ));
+      }
+      quizBrain.nextQuestion();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -39,7 +64,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                'This is where question will go',
+                quizBrain.getQuestionText(),
                 style: TextStyle(
                   fontSize: 25.0,
                   color: Colors.white,
@@ -64,14 +89,8 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                setState(() {
-                  scoreKeeper.add(
-                    Icon(
-                      Icons.check,
-                      color: Colors.green,
-                    ),
-                  );
-                });
+                // true
+                checkAnswer(true);
               },
             ),
           ),
@@ -92,14 +111,8 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                setState(() {
-                  scoreKeeper.add(
-                    Icon(
-                      Icons.close,
-                      color: Colors.redAccent,
-                    ),
-                  );
-                });
+                // False
+                checkAnswer(false);
               },
             ),
           ),
